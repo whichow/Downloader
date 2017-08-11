@@ -4,10 +4,15 @@ using System.IO;
 using System.Net;
 using System.Threading;
 
+public delegate void TaskEventHandler();
+
 public class DownloadTask : ITask
 {
+    public TaskEventHandler taskStart;
+    public TaskEventHandler taskStop;
+
     private const int bufSize = 65536;
-    private volatile bool doDownload = true;
+    private volatile bool doDownload;
     private string url;
     private string filename;
     private Thread downloadThread;
@@ -43,27 +48,20 @@ public class DownloadTask : ITask
         {
             downloadThread = new Thread(DoDownload);
             downloadThread.Start();
+            doDownload = true;
+            if(taskStart != null) taskStart();
         }
     }
 
     public void Stop()
     {
         Console.WriteLine(".................Stop");
-        doDownload = false;
-        if(downloadThread.IsAlive)
-        {
+        if(downloadThread != null && downloadThread.IsAlive)
+        {        
+            doDownload = false;
             downloadThread.Join();
-        }
-    }
-
-    public void Resume()
-    {
-        Console.WriteLine("....................Resume");
-        doDownload = true;
-        if(!downloadThread.IsAlive)
-        {
-            downloadThread = new Thread(DoDownload);
-            downloadThread.Start();
+            downloadThread = null;
+            if(taskStop != null) taskStop();
         }
     }
 
@@ -101,5 +99,10 @@ public class DownloadTask : ITask
             }
         }
         Console.WriteLine("Download Complete");
+    }
+
+    public void Dispose()
+    {
+        throw new NotImplementedException();
     }
 }

@@ -7,7 +7,7 @@ namespace Downloader
     {
         static void Main(string[] args)
         {
-            DownloadTask task = new DownloadTask("http://coserarea.com/test/Framework/Framework_Res/framework_model.unity3d", @"D:\framework_model.unity3d");
+            DownloadTask task = new DownloadTask("http://7dx.pc6.com/xjq5/image2pdf41501.zip", @"D:\image2pdf41501.zip");
             task.Start();
             while(true)
             {
@@ -17,7 +17,7 @@ namespace Downloader
                 }
                 if(Console.ReadKey().Key == ConsoleKey.R)
                 {
-                    task.Resume();
+                    task.Start();
                 }
                 if(Console.ReadKey().Key == ConsoleKey.Escape)
                 {

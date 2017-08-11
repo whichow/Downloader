@@ -1,7 +1,7 @@
+using System;
 
-public interface ITask
+public interface ITask : IDisposable
 {
     void Start();
     void Stop();
-    void Resume();
 }
